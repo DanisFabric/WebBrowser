@@ -23,15 +23,15 @@ public class WebBrowserViewController: UIViewController {
     fileprivate var forwardItem: UIBarButtonItem!
     
     
-    public init(configuration: WKWebViewConfiguration) {
-        webView = WKWebView(frame: CGRect(), configuration: configuration)
-        
+    public init(configuration: WKWebViewConfiguration? = nil) {
+        if let configuration = configuration {
+            webView = WKWebView(frame: CGRect(), configuration: configuration)
+        } else {
+            webView = WKWebView()
+        }
         super.init(nibName: nil, bundle: nil)
-    }
-    public init() {
-        webView = WKWebView()
         
-        super.init(nibName: nil, bundle: nil)
+        setupToolbar()
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -41,8 +41,6 @@ public class WebBrowserViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupToolbar()
-        
         webView.frame = view.bounds
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -79,7 +77,38 @@ extension WebBrowserViewController {
 
 // MARK: - Public Configurations
 extension WebBrowserViewController {
-    
+    public var refreshIcon: UIImage? {
+        get {
+            return refreshItem.image
+        }
+        set {
+            refreshItem.image = newValue
+        }
+    }
+    public var stopIcon: UIImage? {
+        get {
+            return stopItem.image
+        }
+        set {
+            stopItem.image = newValue
+        }
+    }
+    public var backIcon: UIImage? {
+        get {
+            return backItem.image
+        }
+        set {
+            backItem.image = newValue
+        }
+    }
+    public var forwardIcon: UIImage? {
+        get {
+            return forwardItem.image
+        }
+        set {
+            forwardItem.image = newValue
+        }
+    }
 }
 
 extension WebBrowserViewController {
