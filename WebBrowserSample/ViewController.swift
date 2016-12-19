@@ -29,12 +29,12 @@ class ViewController: UIViewController {
         browser.didStartLoadingUrlHandler = { (url) in
             print("start to load \(url)")
         }
-        browser.didFinishLoadingUrlHandler = { (url, succeed) in
-            if succeed {
-                print("succeed to load \(url)")
-            } else {
-                print("failed to load \(url)")
-            }
+        browser.didFinishLoadingUrlHandler = { (url) in
+            print("succeed to load \(url)")
+        }
+        browser.didFailedLoadingUrlHandler = { (url, error) in
+            print("failed to load \(url) - \(error)")
+            
         }
         
         let nav = UINavigationController(rootViewController: browser)

@@ -12,7 +12,8 @@ import WebKit
 
 public class WebBrowserViewController: UIViewController {
     public var didStartLoadingUrlHandler: ((URL) -> Void)?
-    public var didFinishLoadingUrlHandler: ((URL, Bool) -> Void)?
+    public var didFinishLoadingUrlHandler: ((URL) -> Void)?
+    public var didFailedLoadingUrlHandler: ((URL, Error) -> Void)?
     
     let webView: WKWebView
     
@@ -111,19 +112,19 @@ extension WebBrowserViewController: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         updateToolbar()
         if let url = webView.url {
-            didFinishLoadingUrlHandler?(url, true)
+            didFinishLoadingUrlHandler?(url)
         }
     }
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         updateToolbar()
         if let url = webView.url {
-            didFinishLoadingUrlHandler?(url, false)
+            didFailedLoadingUrlHandler?(url, error)
         }
     }
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         updateToolbar()
         if let url = webView.url {
-            didFinishLoadingUrlHandler?(url, false)
+            didFailedLoadingUrlHandler?(url, error)
         }
     }
 }
