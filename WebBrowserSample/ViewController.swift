@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import WebBrowser
 
 class ViewController: UIViewController {
 
@@ -21,5 +22,24 @@ class ViewController: UIViewController {
     }
 
 
+    @IBAction func onBrowser(_ sender: Any) {
+        let browser = WebBrowserViewController()
+        browser.load(urlString: "https://www.baidu.com")
+        
+        browser.didStartLoadingUrlHandler = { (url) in
+            print("start to load \(url)")
+        }
+        browser.didFinishLoadingUrlHandler = { (url, succeed) in
+            if succeed {
+                print("succeed to load \(url)")
+            } else {
+                print("failed to load \(url)")
+            }
+        }
+        
+        let nav = UINavigationController(rootViewController: browser)
+        show(nav, sender: self)
+        
+    }
 }
 

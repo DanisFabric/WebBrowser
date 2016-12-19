@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "002DC9581E07BFE900E188BD"
-               BuildableName = "WebBrowserSample.app"
-               BlueprintName = "WebBrowserSample"
+               BlueprintIdentifier = "002DC9721E07BFF700E188BD"
+               BuildableName = "WebBrowser.framework"
+               BlueprintName = "WebBrowser"
                ReferencedContainer = "container:WebBrowserSample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "002DC9581E07BFE900E188BD"
-            BuildableName = "WebBrowserSample.app"
-            BlueprintName = "WebBrowserSample"
-            ReferencedContainer = "container:WebBrowserSample.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "002DC9581E07BFE900E188BD"
-            BuildableName = "WebBrowserSample.app"
-            BlueprintName = "WebBrowserSample"
+            BlueprintIdentifier = "002DC9721E07BFF700E188BD"
+            BuildableName = "WebBrowser.framework"
+            BlueprintName = "WebBrowser"
             ReferencedContainer = "container:WebBrowserSample.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "002DC9581E07BFE900E188BD"
-            BuildableName = "WebBrowserSample.app"
-            BlueprintName = "WebBrowserSample"
+            BlueprintIdentifier = "002DC9721E07BFF700E188BD"
+            BuildableName = "WebBrowser.framework"
+            BlueprintName = "WebBrowser"
             ReferencedContainer = "container:WebBrowserSample.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
