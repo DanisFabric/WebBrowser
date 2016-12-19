@@ -17,11 +17,27 @@ public class WebBrowserViewController: UIViewController {
     
     let webView: WKWebView
     
+    fileprivate let progressView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .default)
+        progressView.trackTintColor = UIColor.clear
+        
+        return progressView
+    }()
     fileprivate var refreshItem: UIBarButtonItem!
     fileprivate var stopItem: UIBarButtonItem!
     fileprivate var backItem: UIBarButtonItem!
     fileprivate var forwardItem: UIBarButtonItem!
     
+    var tintColor = UIColor.blue {
+        didSet {
+            
+        }
+    }
+    var barTintColor = UIColor.blue {
+        didSet {
+            
+        }
+    }
     
     public init(configuration: WKWebViewConfiguration? = nil) {
         if let configuration = configuration {
@@ -41,11 +57,20 @@ public class WebBrowserViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        assert(navigationController != nil, "BrowserWebViewController must be embeded in UINavigationController")
+        
         webView.frame = view.bounds
         webView.navigationDelegate = self
         webView.uiDelegate = self
         
+        progressView.frame = CGRect(x: 0,
+                                    y: navigationController!.navigationBar.bounds.maxY - progressView.frame.height,
+                                    width: navigationController!.navigationBar.bounds.width,
+                                    height: progressView.frame.height)
+        
+        
         view.addSubview(webView)
+        navigationController!.navigationBar.addSubview(progressView)
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
