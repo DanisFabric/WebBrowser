@@ -36,7 +36,7 @@ class ViewController: UIViewController {
             print("failed to load \(url) - \(error)")
             
         }
-        browser.isActionEnabled = false
+        browser.isActionEnabled = true
         
         let nav = UINavigationController(rootViewController: browser)
         show(nav, sender: self)
