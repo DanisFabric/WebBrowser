@@ -10,6 +10,8 @@ import UIKit
 import WebKit
 
 
+private var KVOContext = "com.danis.WebBrowser.WebBrowserViewController.KVOContext"
+
 public class WebBrowserViewController: UIViewController {
     public var didStartLoadingUrlHandler: ((URL) -> Void)?
     public var didFinishLoadingUrlHandler: ((URL) -> Void)?
@@ -27,15 +29,26 @@ public class WebBrowserViewController: UIViewController {
     fileprivate var stopItem: UIBarButtonItem!
     fileprivate var backItem: UIBarButtonItem!
     fileprivate var forwardItem: UIBarButtonItem!
+    fileprivate var moreItem:UIBarButtonItem!
     
-    var tintColor = UIColor.blue {
+    fileprivate var loadingToolbarItems: [UIBarButtonItem]!
+    fileprivate var normalToolbarItems: [UIBarButtonItem]!
+    
+    public var tintColor = UIColor.blue {
         didSet {
-            
+            navigationController?.navigationBar.tintColor = tintColor
+            navigationController?.toolbar.tintColor = tintColor
         }
     }
-    var barTintColor = UIColor.blue {
+    public var barTintColor = UIColor.blue {
         didSet {
-            
+            navigationController?.navigationBar.barTintColor = tintColor
+            navigationController?.toolbar.barTintColor = tintColor
+        }
+    }
+    public var isActionEnabled: Bool = true {
+        didSet {
+            updateToolbar()
         }
     }
     
@@ -48,10 +61,16 @@ public class WebBrowserViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         setupToolbar()
+        
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &KVOContext)
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     public override func viewDidLoad() {
@@ -99,60 +118,31 @@ extension WebBrowserViewController {
     }
 }
 
-
-// MARK: - Public Configurations
 extension WebBrowserViewController {
-    public var refreshIcon: UIImage? {
-        get {
-            return refreshItem.image
-        }
-        set {
-            refreshItem.image = newValue
-        }
-    }
-    public var stopIcon: UIImage? {
-        get {
-            return stopItem.image
-        }
-        set {
-            stopItem.image = newValue
-        }
-    }
-    public var backIcon: UIImage? {
-        get {
-            return backItem.image
-        }
-        set {
-            backItem.image = newValue
-        }
-    }
-    public var forwardIcon: UIImage? {
-        get {
-            return forwardItem.image
-        }
-        set {
-            forwardItem.image = newValue
-        }
-    }
-}
-
-extension WebBrowserViewController {
-    @objc fileprivate func onActionBack(sender: AnyObject) {
+    func onActionBack(sender: AnyObject) {
         webView.goBack()
         
         updateToolbar()
     }
-    @objc fileprivate func onActionForward(sender: AnyObject) {
+    func onActionForward(sender: AnyObject) {
         webView.goForward()
         
         updateToolbar()
     }
-    @objc fileprivate func onActionRefresh(sender: AnyObject) {
+    func onActionRefresh(sender: AnyObject) {
         webView.stopLoading()
         webView.reload()
     }
-    @objc fileprivate func onActionStop(sender: AnyObject) {
+    func onActionStop(sender: AnyObject) {
         webView.stopLoading()
+    }
+    func onActionMore(sender: AnyObject) {
+        guard let url = webView.url else {
+            return
+        }
+        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        
+        present(activityController, animated: true, completion: nil)
     }
 }
 
@@ -191,17 +181,54 @@ extension WebBrowserViewController: WKUIDelegate {
 
 extension WebBrowserViewController {
     fileprivate func setupToolbar() {
-        refreshItem = UIBarButtonItem(title: "refresh", style: .plain, target: self, action: #selector(onActionRefresh(sender:)))
-        stopItem = UIBarButtonItem(title: "stop", style: .plain, target: self, action: #selector(onActionStop(sender:)))
+        refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(onActionRefresh(sender:)))
+        stopItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(onActionStop(sender:)))
         backItem = UIBarButtonItem(title: "back", style: .plain, target: self, action: #selector(onActionBack(sender:)))
         forwardItem = UIBarButtonItem(title: "forward", style: .plain, target: self, action: #selector(onActionForward(sender:)))
+        moreItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onActionMore(sender:)))
         
-        setToolbarItems([backItem, forwardItem, refreshItem, stopItem], animated: false)
+        let fixedSeparator = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        let flexibleSeparator = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        fixedSeparator.width = 36
+        
+        loadingToolbarItems = [backItem, fixedSeparator, forwardItem, fixedSeparator, stopItem, flexibleSeparator, moreItem]
+        normalToolbarItems = [backItem, fixedSeparator, forwardItem, fixedSeparator, refreshItem, flexibleSeparator, moreItem]
+        
+        setToolbarItems(loadingToolbarItems, animated: false)
     }
     fileprivate func updateToolbar() {
         backItem.isEnabled = webView.canGoBack
         forwardItem.isEnabled = webView.canGoForward
         
+        if webView.isLoading {
+            if !isActionEnabled {
+                let itemsWithoutAction = loadingToolbarItems[0..<loadingToolbarItems.count - 2]
+                setToolbarItems(Array(itemsWithoutAction), animated: true)
+            } else {
+                setToolbarItems(loadingToolbarItems, animated: true)
+            }
+        } else {
+            if !isActionEnabled {
+                let itemsWithoutAction = normalToolbarItems[0..<normalToolbarItems.count - 2]
+                setToolbarItems(Array(itemsWithoutAction), animated: true)
+            } else {
+                setToolbarItems(normalToolbarItems, animated: true)
+            }
+        }
+    }
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard context == &KVOContext && keyPath == "estimatedProgress" else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            
+            return
+        }
+        progressView.alpha = 1
+        progressView.setProgress(Float(webView.estimatedProgress), animated: Float(webView.estimatedProgress) > progressView.progress)
+        if webView.estimatedProgress >= 1 {
+            self.progressView.alpha = 0
+            self.progressView.setProgress(0, animated: false)
+        }
         
     }
 }

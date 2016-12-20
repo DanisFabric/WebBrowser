@@ -24,7 +24,7 @@ class ViewController: UIViewController {
 
     @IBAction func onBrowser(_ sender: Any) {
         let browser = WebBrowserViewController()
-        browser.load(urlString: "https://www.baidu.com")
+        browser.load(urlString: "https://bing.com")
         
         browser.didStartLoadingUrlHandler = { (url) in
             print("start to load \(url)")
@@ -36,6 +36,7 @@ class ViewController: UIViewController {
             print("failed to load \(url) - \(error)")
             
         }
+        browser.isActionEnabled = false
         
         let nav = UINavigationController(rootViewController: browser)
         show(nav, sender: self)
