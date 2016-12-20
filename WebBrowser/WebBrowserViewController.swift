@@ -78,7 +78,13 @@ public class WebBrowserViewController: UIViewController {
 
         assert(navigationController != nil, "BrowserWebViewController must be embeded in UINavigationController")
         
+        if navigationController!.viewControllers.first == self {
+            // WebBrowser is rootViewController
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(onActionClose(sender:)))
+        }
+        
         webView.frame = view.bounds
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         webView.navigationDelegate = self
         webView.uiDelegate = self
         
@@ -86,7 +92,7 @@ public class WebBrowserViewController: UIViewController {
                                     y: navigationController!.navigationBar.bounds.maxY - progressView.frame.height,
                                     width: navigationController!.navigationBar.bounds.width,
                                     height: progressView.frame.height)
-        
+        progressView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         view.addSubview(webView)
         navigationController!.navigationBar.addSubview(progressView)
@@ -144,6 +150,9 @@ extension WebBrowserViewController {
         
         present(activityController, animated: true, completion: nil)
     }
+    func onActionClose(sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 extension WebBrowserViewController: WKNavigationDelegate {
@@ -181,10 +190,17 @@ extension WebBrowserViewController: WKUIDelegate {
 
 extension WebBrowserViewController {
     fileprivate func setupToolbar() {
+        tintColor = UIColor.blue
+        barTintColor = UIColor.white
+        
+        let bundle = Bundle(for: type(of: self))
+        let backIcon = UIImage(named: "back-item", in: bundle, compatibleWith: nil)
+        let forwardIcon = UIImage(named: "forward-item", in: bundle, compatibleWith: nil)
+        
         refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(onActionRefresh(sender:)))
         stopItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(onActionStop(sender:)))
-        backItem = UIBarButtonItem(title: "back", style: .plain, target: self, action: #selector(onActionBack(sender:)))
-        forwardItem = UIBarButtonItem(title: "forward", style: .plain, target: self, action: #selector(onActionForward(sender:)))
+        backItem = UIBarButtonItem(image: backIcon, style: .plain, target: self, action: #selector(onActionBack(sender:)))
+        forwardItem = UIBarButtonItem(image: forwardIcon, style: .plain, target: self, action: #selector(onActionForward(sender:)))
         moreItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onActionMore(sender:)))
         
         let fixedSeparator = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
@@ -230,5 +246,14 @@ extension WebBrowserViewController {
             self.progressView.setProgress(0, animated: false)
         }
         
+    }
+}
+
+extension WebBrowserViewController {
+    public override var shouldAutorotate: Bool {
+        return true
+    }
+    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .all
     }
 }

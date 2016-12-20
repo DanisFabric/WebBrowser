@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0028CB7B1E0921BC00424102 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0028CB7A1E0921BC00424102 /* Assets.xcassets */; };
 		002DC95D1E07BFE900E188BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002DC95C1E07BFE900E188BD /* AppDelegate.swift */; };
 		002DC95F1E07BFE900E188BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002DC95E1E07BFE900E188BD /* ViewController.swift */; };
 		002DC9621E07BFE900E188BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 002DC9601E07BFE900E188BD /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0028CB7A1E0921BC00424102 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		002DC9591E07BFE900E188BD /* WebBrowserSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebBrowserSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		002DC95C1E07BFE900E188BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		002DC95E1E07BFE900E188BD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			children = (
 				002DC9751E07BFF800E188BD /* WebBrowser.h */,
 				002DC9801E07C00B00E188BD /* WebBrowserViewController.swift */,
+				0028CB7A1E0921BC00424102 /* Assets.xcassets */,
 				002DC9761E07BFF800E188BD /* Info.plist */,
 			);
 			path = WebBrowser;
@@ -222,6 +225,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0028CB7B1E0921BC00424102 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
