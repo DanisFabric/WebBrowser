@@ -36,18 +36,6 @@ public class WebBrowserViewController: UIViewController {
     fileprivate var loadingToolbarItems: [UIBarButtonItem]!
     fileprivate var normalToolbarItems: [UIBarButtonItem]!
     
-    public var tintColor = UIColor.blue {
-        didSet {
-            navigationController?.navigationBar.tintColor = tintColor
-            navigationController?.toolbar.tintColor = tintColor
-        }
-    }
-    public var barTintColor: UIColor? = nil {
-        didSet {
-            navigationController?.navigationBar.barTintColor = barTintColor
-            navigationController?.toolbar.barTintColor = barTintColor
-        }
-    }
     public var isActionEnabled: Bool = true {
         didSet {
             updateToolbar()
@@ -85,10 +73,8 @@ public class WebBrowserViewController: UIViewController {
             // WebBrowser is rootViewController
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(onActionClose(sender:)))
         }
-        let newTint = tintColor
-        let newBarTint = barTintColor
-        tintColor = newTint             // apply the tint color for navigationController
-        barTintColor = newBarTint       // apply the barTint color for navigationController
+        navigationController?.toolbar.tintColor = navigationController?.navigationBar.tintColor
+        navigationController?.toolbar.barTintColor = navigationController?.navigationBar.barTintColor
         
         webView.frame = view.bounds
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -205,8 +191,6 @@ extension WebBrowserViewController: WKUIDelegate {
 
 extension WebBrowserViewController {
     fileprivate func setupToolbar() {
-        tintColor = UIColor.blue
-        barTintColor = UIColor.white
         let bundle = Bundle(for: type(of: JustForBundle.self()))
         let backIcon = UIImage(named: "back-item", in: bundle, compatibleWith: nil)
         let forwardIcon = UIImage(named: "forward-item", in: bundle, compatibleWith: nil)
