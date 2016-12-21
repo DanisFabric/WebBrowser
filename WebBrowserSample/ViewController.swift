@@ -37,6 +37,7 @@ class ViewController: UIViewController {
             
         }
         browser.isActionEnabled = false
+        browser.tintColor = UIColor.black
         
         let nav = UINavigationController(rootViewController: browser)
         show(nav, sender: self)

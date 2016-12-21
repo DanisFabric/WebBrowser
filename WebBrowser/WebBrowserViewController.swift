@@ -40,10 +40,10 @@ public class WebBrowserViewController: UIViewController {
             navigationController?.toolbar.tintColor = tintColor
         }
     }
-    public var barTintColor = UIColor.blue {
+    public var barTintColor: UIColor? = nil {
         didSet {
-            navigationController?.navigationBar.barTintColor = tintColor
-            navigationController?.toolbar.barTintColor = tintColor
+            navigationController?.navigationBar.barTintColor = barTintColor
+            navigationController?.toolbar.barTintColor = barTintColor
         }
     }
     public var isActionEnabled: Bool = true {
@@ -61,6 +61,7 @@ public class WebBrowserViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         setupToolbar()
+        hidesBottomBarWhenPushed = true
         
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &KVOContext)
     }
@@ -82,6 +83,10 @@ public class WebBrowserViewController: UIViewController {
             // WebBrowser is rootViewController
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(onActionClose(sender:)))
         }
+        let newTint = tintColor
+        let newBarTint = barTintColor
+        tintColor = newTint             // apply the tint color for navigationController
+        barTintColor = newBarTint       // apply the barTint color for navigationController
         
         webView.frame = view.bounds
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -100,8 +105,16 @@ public class WebBrowserViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setToolbarHidden(false, animated: true)
+        
         updateToolbar()
         navigationController?.setToolbarHidden(false, animated: false)
+    }
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.setToolbarHidden(true, animated: false)
     }
 }
 
