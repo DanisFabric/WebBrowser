@@ -61,6 +61,7 @@ public class WebBrowserViewController: UIViewController {
     }
     
     deinit {
+        progressView.removeFromSuperview()
         webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
