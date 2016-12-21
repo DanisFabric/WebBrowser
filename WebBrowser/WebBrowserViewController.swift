@@ -12,6 +12,8 @@ import WebKit
 
 private var KVOContext = "com.danis.WebBrowser.WebBrowserViewController.KVOContext"
 
+class JustForBundle {}
+
 public class WebBrowserViewController: UIViewController {
     public var didStartLoadingUrlHandler: ((URL) -> Void)?
     public var didFinishLoadingUrlHandler: ((URL) -> Void)?
@@ -205,8 +207,7 @@ extension WebBrowserViewController {
     fileprivate func setupToolbar() {
         tintColor = UIColor.blue
         barTintColor = UIColor.white
-        
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle(for: type(of: JustForBundle.self()))
         let backIcon = UIImage(named: "back-item", in: bundle, compatibleWith: nil)
         let forwardIcon = UIImage(named: "forward-item", in: bundle, compatibleWith: nil)
         
