@@ -14,10 +14,12 @@ private var KVOContext = "com.danis.WebBrowser.WebBrowserViewController.KVOConte
 
 class JustForBundle {}
 
-public class WebBrowserViewController: UIViewController {
+open class WebBrowserViewController: UIViewController {
     public var didStartLoadingUrlHandler: ((URL) -> Void)?
     public var didFinishLoadingUrlHandler: ((URL) -> Void)?
     public var didFailedLoadingUrlHandler: ((URL, Error) -> Void)?
+    
+    public var willDeinitHandler: (() -> Void)?
     
     let webView: WKWebView
     
@@ -41,6 +43,7 @@ public class WebBrowserViewController: UIViewController {
             updateToolbar()
         }
     }
+    public var isToolbarHidden = false
     
     public init(configuration: WKWebViewConfiguration? = nil) {
         if let configuration = configuration {
@@ -61,11 +64,12 @@ public class WebBrowserViewController: UIViewController {
     }
     
     deinit {
+        willDeinitHandler?()
         progressView.removeFromSuperview()
         webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
 
         assert(navigationController != nil, "BrowserWebViewController must be embeded in UINavigationController")
@@ -91,16 +95,15 @@ public class WebBrowserViewController: UIViewController {
         view.addSubview(webView)
         navigationController!.navigationBar.addSubview(progressView)
     }
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        navigationController?.setToolbarHidden(false, animated: true)
-        
         updateToolbar()
-        navigationController?.setToolbarHidden(false, animated: false)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setToolbarHidden(isToolbarHidden, animated: true)
+        
     }
-    public override func viewWillDisappear(_ animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         navigationController?.setToolbarHidden(true, animated: false)
@@ -182,6 +185,25 @@ extension WebBrowserViewController: WKNavigationDelegate {
             didFailedLoadingUrlHandler?(url, error)
         }
     }
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url else {
+            return
+        }
+        
+        if let scheme = url.scheme {
+            if ["https", "http"].contains(scheme) {
+                if navigationAction.targetFrame == nil {
+                    load(url: url)
+                    
+                    decisionHandler(.cancel)
+                    
+                    return
+                }
+            }
+        }
+        
+        decisionHandler(.allow)
+    }
 }
 
 extension WebBrowserViewController: WKUIDelegate {
@@ -232,7 +254,7 @@ extension WebBrowserViewController {
             }
         }
     }
-    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard context == &KVOContext && keyPath == "estimatedProgress" else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             
@@ -249,10 +271,10 @@ extension WebBrowserViewController {
 }
 
 extension WebBrowserViewController {
-    public override var shouldAutorotate: Bool {
+    open override var shouldAutorotate: Bool {
         return true
     }
-    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .all
     }
 }

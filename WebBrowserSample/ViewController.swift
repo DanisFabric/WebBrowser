@@ -24,7 +24,7 @@ class ViewController: UIViewController {
 
     @IBAction func onBrowser(_ sender: Any) {
         let browser = WebBrowserViewController()
-        browser.load(urlString: "https://bing.com")
+        browser.load(urlString: "https://test.insta360.com/p/9a9f40782e9355eb01f3a155db2a5baa")
         
         browser.didStartLoadingUrlHandler = { (url) in
             print("start to load \(url)")
